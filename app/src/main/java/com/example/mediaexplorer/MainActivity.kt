@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.example.mediaexplorer.ui.theme.MediaExplorerTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MediaExplorerTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     uno(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
@@ -35,26 +38,38 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun uno(name: String, modifier: Modifier = Modifier) {
-    val expanded = remember { mutableStateOf(false) }
-    Column(modifier=modifier.padding(24.dp)){
-        ElevatedButton(
-            onClick={expanded.value= !expanded.value}) {
+    val expanded = remember { mutableStateOf(true) }
+    val extraPadding = if(expanded.value)60.dp else 0.dp
 
+    Column(modifier = Modifier.padding(bottom = extraPadding)) {
+        Text(text="")
+        Text(text="MediaExplorer")
+        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
+
+            Image(painter = painterResource(id=R.drawable.claqueta), contentDescription = "Peliculas"
+            ,modifier = Modifier.padding(8.dp).size(48.dp))
+            Text(if(expanded.value) "Peliculas" else "MMMMM")
         }
-        ElevatedButton(
-            onClick={expanded.value= !expanded.value}) {
-            Text(text="Series")
+        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
+            Image(painter = painterResource(id=R.drawable.series), contentDescription = "Peliculas",
+                modifier = Modifier.padding(8.dp).size(48.dp))
+            Text(if(expanded.value) "Series" else "MMMMM")
         }
-        ElevatedButton(
-            onClick={expanded.value= !expanded.value}) {
-            Text(text="Anime")
+        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
+            Image(painter = painterResource(id=R.drawable.anime), contentDescription = "Peliculas",
+                modifier = Modifier.padding(8.dp).size(48.dp))
+            Text(if(expanded.value) "Anime" else "MMMMM")
+        }
+        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
+            Image(painter = painterResource(id=R.drawable.mas), contentDescription = "Peliculas",
+                modifier = Modifier.padding(8.dp).size(48.dp))
+            Text(if(expanded.value) "Anadir Categoria" else "MMMMM")
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable

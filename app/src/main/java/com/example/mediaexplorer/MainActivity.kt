@@ -1,5 +1,7 @@
 package com.example.mediaexplorer
 
+import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
+import com.example.mediaexplorer.ui.theme.Series
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +33,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     uno(
                         name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        context = this
                     )
                 }
             }
@@ -40,20 +44,26 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun uno(name: String, modifier: Modifier = Modifier) {
+fun uno(name: String, modifier: Modifier = Modifier, context : Context) {
     val expanded = remember { mutableStateOf(true) }
     val extraPadding = if(expanded.value)60.dp else 0.dp
 
     Column(modifier = Modifier.padding(bottom = extraPadding)) {
         Text(text="")
         Text(text="MediaExplorer")
-        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
+        ElevatedButton(onClick = {
+            val intent = Intent(context, Peliculas::class.java)
+            context.startActivity(intent)
+        }) {
 
             Image(painter = painterResource(id=R.drawable.claqueta), contentDescription = "Peliculas"
             ,modifier = Modifier.padding(8.dp).size(48.dp))
             Text(if(expanded.value) "Peliculas" else "MMMMM")
         }
-        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
+        ElevatedButton(onClick = {
+            val intent = Intent(context, Series::class.java)
+            context.startActivity(intent)
+        }) {
             Image(painter = painterResource(id=R.drawable.series), contentDescription = "Peliculas",
                 modifier = Modifier.padding(8.dp).size(48.dp))
             Text(if(expanded.value) "Series" else "MMMMM")
@@ -71,10 +81,33 @@ fun uno(name: String, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun unoPreview(modifier: Modifier = Modifier) {
+    val expanded = remember { mutableStateOf(true) }
+    val extraPadding = if (expanded.value) 60.dp else 0.dp
+
+    Column(modifier = Modifier.padding(bottom = extraPadding)) {
+        Text(text = "")
+        Text(text = "MediaExplorer")
+        ElevatedButton(onClick = {}) {
+            Text(if (expanded.value) "Peliculas" else "MMMMM")
+        }
+        ElevatedButton(onClick = {}) {
+            Text(if (expanded.value) "Series" else "MMMMM")
+        }
+        ElevatedButton(onClick = {}) {
+            Text(if (expanded.value) "Anime" else "MMMMM")
+        }
+        ElevatedButton(onClick = {}) {
+            Text(if (expanded.value) "Añadir Categoria" else "MMMMM")
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MediaExplorerTheme {
-        uno("?")
+        unoPreview()
     }
 }

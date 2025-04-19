@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.mutableStateListOf
 import com.example.mediaexplorer.ui.theme.Series
 
 class MainActivity : ComponentActivity() {
@@ -46,40 +47,62 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun uno(name: String, modifier: Modifier = Modifier, context : Context) {
     val expanded = remember { mutableStateOf(true) }
-    val extraPadding = if(expanded.value)60.dp else 0.dp
+    val extraPadding = if(expanded.value) 60.dp else 0.dp
+    val categorias = remember {
+        mutableStateOf(
+            mutableListOf(
+                Categoria("Películas", R.drawable.claqueta) {
+                    context.startActivity(Intent(context, Peliculas::class.java))
+                },
+                Categoria("Series", R.drawable.series) {
+                    context.startActivity(Intent(context, Series::class.java))
+                },
+                Categoria("Anime", R.drawable.anime) {
+                    expanded.value = !expanded.value
+                }
+
+            )
+        )
+    }
 
     Column(modifier = Modifier.padding(bottom = extraPadding)) {
-        Text(text="")
-        Text(text="MediaExplorer")
-        ElevatedButton(onClick = {
-            val intent = Intent(context, Peliculas::class.java)
-            context.startActivity(intent)
-        }) {
+        Text(text = "MediaExplorer")
 
-            Image(painter = painterResource(id=R.drawable.claqueta), contentDescription = "Peliculas"
-            ,modifier = Modifier.padding(8.dp).size(48.dp))
-            Text(if(expanded.value) "Peliculas" else "MMMMM")
+
+        categorias.value.forEach { categoria ->
+            ElevatedButton(onClick = categoria.onClick) {
+                Image(
+                    painter = painterResource(id = categoria.icon),
+                    contentDescription = categoria.nombre,
+                    modifier = Modifier.padding(8.dp).size(48.dp)
+                )
+                Text(if (expanded.value) categoria.nombre else "MMMMM")
+            }
         }
+
         ElevatedButton(onClick = {
-            val intent = Intent(context, Series::class.java)
-            context.startActivity(intent)
+            categorias.value.add(
+                Categoria("Nueva Categoria", R.drawable.mas) {
+                }
+            )
         }) {
-            Image(painter = painterResource(id=R.drawable.series), contentDescription = "Peliculas",
-                modifier = Modifier.padding(8.dp).size(48.dp))
-            Text(if(expanded.value) "Series" else "MMMMM")
+            Image(
+                painter = painterResource(id = R.drawable.mas),
+                contentDescription = "Añadir",
+                modifier = Modifier.padding(8.dp).size(48.dp)
+            )
+            Text("Añadir Categoria")
         }
-        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
-            Image(painter = painterResource(id=R.drawable.anime), contentDescription = "Peliculas",
-                modifier = Modifier.padding(8.dp).size(48.dp))
-            Text(if(expanded.value) "Anime" else "MMMMM")
-        }
-        ElevatedButton(onClick = { expanded.value = !expanded.value }) {
-            Image(painter = painterResource(id=R.drawable.mas), contentDescription = "Peliculas",
-                modifier = Modifier.padding(8.dp).size(48.dp))
-            Text(if(expanded.value) "Anadir Categoria" else "MMMMM")
-        }
+
     }
 }
+
+
+data class Categoria(
+    val nombre: String,
+    val icon: Int,
+    val onClick: () -> Unit
+)
 
 @Composable
 fun unoPreview(modifier: Modifier = Modifier) {
@@ -111,3 +134,4 @@ fun GreetingPreview() {
         unoPreview()
     }
 }
+
